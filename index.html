@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book List Manager</title>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+    }
+    form {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Book List</h1>
+
+  <!-- Feature 2: Display data in a table -->
+  <table id="bookTable">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Year</th>
+        <th>Genre</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- Feature 3: Update book information -->
+  <h2>Update Book</h2>
+  <form id="updateForm">
+    <input type="text" id="updateTitle" placeholder="Title to update" required />
+    <input type="text" id="newAuthor" placeholder="New Author" required />
+    <input type="text" id="newYear" placeholder="New Year" required />
+    <input type="text" id="newGenre" placeholder="New Genre" required />
+    <button type="submit">Update Book</button>
+  </form>
+
+  <!-- Feature 4: Remove a book -->
+  <h2>Remove Book</h2>
+  <form id="removeForm">
+    <input type="text" id="removeTitle" placeholder="Title to remove" required />
+    <button type="submit">Remove Book</button>
+  </form>
+
+  <script>
+    // Feature 1: Define JSON data structure
+    let books = [
+      {
+        title: "1984",
+        author: "George Orwell",
+        year: 1949,
+        genre: "Dystopian"
+      },
+      {
+        title: "The Hobbit",
+        author: "J.R.R. Tolkien",
+        year: 1937,
+        genre: "Fantasy"
+      },
+      {
+        title: "To Kill a Mockingbird",
+        author: "Harper Lee",
+        year: 1960,
+        genre: "Fiction"
+      }
+    ];
+
+    // Function to display books in HTML table (Feature 2)
+    function displayBooks() {
+      const tableBody = document.querySelector("#bookTable tbody");
+      tableBody.innerHTML = "";
+      books.forEach(book => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${book.title}</td>
+          <td>${book.author}</td>
+          <td>${book.year}</td>
+          <td>${book.genre}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    // Update book details (Feature 3) + Validation (Feature 5)
+    document.getElementById("updateForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const title = document.getElementById("updateTitle").value.trim();
+      const newAuthor = document.getElementById("newAuthor").value.trim();
+      const newYear = parseInt(document.getElementById("newYear").value.trim());
+      const newGenre = document.getElementById("newGenre").value.trim();
+
+      // Feature 5: Input validation
+      if (!title || !newAuthor || !newYear || isNaN(newYear) || !newGenre) {
+        alert("Please fill out all fields correctly.");
+        return;
+      }
+
+      // Find and update the book
+      const book = books.find(b => b.title.toLowerCase() === title.toLowerCase());
+      if (book) {
+        book.author = newAuthor;
+        book.year = newYear;
+        book.genre = newGenre;
+        displayBooks();
+      } else {
+        alert("Book not found.");
+      }
+    });
+
+    // Remove book by title (Feature 4) + Validation (Feature 5)
+    document.getElementById("removeForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const title = document.getElementById("removeTitle").value.trim();
+
+      // Feature 5: Input validation
+      if (!title) {
+        alert("Please enter a title.");
+        return;
+      }
+
+      const initialLength = books.length;
+      books = books.filter(b => b.title.toLowerCase() !== title.toLowerCase());
+
+      if (books.length === initialLength) {
+        alert("Book not found.");
+      } else {
+        displayBooks();
+      }
+    });
+
+    // Initial render of table
+    displayBooks();
+  </script>
+</body>
+</html>
